@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="navbar">
         <el-menu default-active="1" class="el-menu-demo" mode="horizontal">
             <el-menu-item index="1">AppliJuice</el-menu-item>
             <el-submenu index="2">
@@ -30,19 +30,39 @@
             <el-menu-item index="3">真实Essays</el-menu-item>
             <el-menu-item index="4">看看我的申请者信息😄</el-menu-item>
         </el-menu>
-        <div id="navbar">
-            <el-menu :default-active="aci" class="el-menu-demo" mode="horizontal">
-                <el-menu-item index="1">AppliJuice</el-menu-item>
-                <el-submenu index="2">
-                    <template slot="title">这是什么？我在干嘛？</template>
-                    <el-menu-item index="2-1">皮</el-menu-item>
-                    <el-menu-item index="2-2">学习前端</el-menu-item>
-                    <el-menu-item index="2-3">浪费时间</el-menu-item>            
-                </el-submenu>
-                <el-menu-item index="3">真实Essays</el-menu-item>
-                <el-menu-item index="4">看看我的申请者信息😄</el-menu-item>
-            </el-menu>
-        </div>
+    </div>
+    <div id="app">
+        <el-container>
+            <el-header>
+                <h1>客官，又有新的文书？</h1>
+            </el-header>
+            <el-main>
+                <el-form :model="form" label-width="120px">
+                    <el-form-item label="Essay Prompt">
+                        <el-input type="textarea" v-model="form.prompt" :rows="3"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Essay Text">
+                        <el-input type="textarea" v-model="form.text" :rows="10"></el-input>
+                    </el-form-item>
+                    <div class="line"></div>
+                    <el-form-item label="Tags">
+                        <template v-for="(tagGroup,index) in availableTags">
+                            <br>
+                            <el-form-item :label="tagGroup.name">
+                                <el-row :gutter="20">
+                                    <el-col :span="4">
+                                        <el-input v-model="form.newTagInputs[tagGroup.name]" placeholder="A New Tag?" @keyup.enter.native="addTag(index)"></el-input>
+                                    </el-col>
+                                    <el-checkbox-group v-model="form.tagList[tagGroup.name]">
+                                        <el-checkbox v-for="tag in tagGroup.tags" :label="tag"></el-checkbox>
+                                    </el-checkbox-group>
+                                </el-row>
+                            </el-form-item>
+                        </template>
+                    </el-form-item>
+                </el-form>
+            </el-main>
+        </el-container>
     </div>
 </div>
 
@@ -50,10 +70,53 @@
 
 <script>
     new Vue({
+        el: "#navbar"
+    });
+    var app = new Vue({
         el: "#app",
-        data:
-        {
-            aci: "3"
+        data:{
+            form:{
+                prompt:'',
+                text:'',
+                tagList:{
+                    prompt_type:[],
+                    college:[],
+                    others:[]
+                },
+                newTagInputs:{
+                    prompt_type:'',
+                    college:'',
+                    others:''
+                }
+            },
+            availableTags:[
+            { name: "prompt_type", tags: ['WhyMajor', 'WhySchool', 'Extended'] },
+            { name: "college", tags: ['Caltech', 'Cornell', 'Pomona', 'Tsinghua', 'Harvey Mudd', 'MIT'] },
+            { name: "others", tags: ['admitted', 'rejected', 'waitlisted']}
+            ],
+        },
+        methods:{
+            addTag: function(tagGroupIndex) {
+                var name = this.availableTags[tagGroupIndex].name.toString();
+                this.availableTags[tagGroupIndex].tags.push(this.form.newTagInputs[name]);
+                this.form.newTagInputs[name]='';
+            }
         }
     });
 </script>
+
+<style>
+.el-header, .el-footer {
+    background-color: #FFFFFF;
+    color: #333;
+    text-align: center;
+    line-height: 20px;
+    /*height: 100px;*/
+
+}
+
+* {
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+
+</style>
