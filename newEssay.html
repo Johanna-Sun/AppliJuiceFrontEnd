@@ -99,7 +99,9 @@
             addTag: function(tagGroupIndex) {
                 var name = this.availableTags[tagGroupIndex].name.toString();
                 this.availableTags[tagGroupIndex].tags.push(this.form.newTagInputs[name]);
+                this.form.tagList[name].push(this.form.newTagInputs[name]);
                 this.form.newTagInputs[name]='';
+
             }
         }
     });
